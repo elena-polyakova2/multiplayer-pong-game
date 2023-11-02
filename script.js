@@ -2,8 +2,6 @@
 const { body } = document;
 const canvas = document.createElement('canvas');
 const context = canvas.getContext('2d');
-
-
 const width = 500;
 const height = 700;
 const screenWidth = window.screen.width;
@@ -45,18 +43,18 @@ if (isMobile.matches) {
 // Score
 let playerScore = 0;
 let computerScore = 0;
-const winningScore = 7;
-// let isGameOver = true;
-// let isNewGame = true;
+const winningScore = 10;
+let isGameOver = true;
+let isNewGame = true;
 
 // Render Everything on Canvas
 function renderCanvas() {
   // Canvas Background
-  context.fillStyle = 'mediumseagreen';
+  context.fillStyle = 'darkgreen';
   context.fillRect(0, 0, width, height);
 
   // Paddle Color
-  context.fillStyle = 'bisque';
+  context.fillStyle = 'azure';
 
   // Player Paddle (Bottom)
   context.fillRect(paddleBottomX, height - 20, paddleWidth, paddleHeight);
@@ -91,9 +89,6 @@ function createCanvas() {
   body.appendChild(canvas);
   renderCanvas();
 }
-
-// Remove this
-createCanvas();
 
 // Reset Ball to Center
 function ballReset() {
@@ -178,30 +173,30 @@ function computerAI() {
 
 function showGameOverEl(winner) {
   // Hide Canvas
-
-  // // Container
-  // gameOverEl.textContent = '';
-  // gameOverEl.classList.add('game-over-container');
-  // // Title
-  // const title = document.createElement('h1');
-  // title.textContent = `${winner} Wins!`;
-  // // Button
-  // const playAgainBtn = document.createElement('button');
-  // playAgainBtn.setAttribute('onclick', 'startGame()');
-  // playAgainBtn.textContent = 'Play Again';
-  // // Append
-
-  
+  canvas.hidden = true;
+  // Container
+  gameOverEl.textContent = '';
+  gameOverEl.classList.add('game-over-container');
+  // Title
+  const title = document.createElement('h1');
+  title.textContent = `${winner} Wins!`;
+  // Button
+  const playAgainBtn = document.createElement('button');
+  playAgainBtn.setAttribute('onclick', 'startGame()');
+  playAgainBtn.textContent = 'Play Again';
+  // Append
+  gameOverEl.append(title, playAgainBtn);
+  body.appendChild(gameOverEl);
 }
 
 // Check If One Player Has Winning Score, If They Do, End Game
 function gameOver() {
-  // if (playerScore === winningScore || computerScore === winningScore) {
-  //   isGameOver = ;
-  //   // Set Winner
-  //   let winner = ;
-  //   showGameOverEl(winner);
-  // }
+  if (playerScore === winningScore || computerScore === winningScore) {
+    isGameOver = true;
+    // Set Winner
+    const winner = playerScore === winningScore ? 'Player 1' : 'Computer';
+    showGameOverEl(winner);
+  }
 }
 
 // Called Every Frame
@@ -210,25 +205,26 @@ function animate() {
   ballMove();
   ballBoundaries();
   computerAI();
-  window.requestAnimationFrame(animate);
+  gameOver();
+  if (!isGameOver) {
+    window.requestAnimationFrame(animate);
+  }
 }
 
 // Start Game, Reset Everything
 function startGame() {
-  // if (isGameOver && !isNewGame) {
-
-
-  // }
-  // isGameOver = ;
-  // isNewGame = ;
+  if (isGameOver && !isNewGame) {
+    body.removeChild(gameOverEl);
+    canvas.hidden = false;
+  }
+  isGameOver = false;
+  isNewGame = false;
   playerScore = 0;
   computerScore = 0;
   ballReset();
   createCanvas();
-  animate();     
- 
+  animate();
   canvas.addEventListener('mousemove', (e) => {
-    console.log(e.clientX);
     playerMoved = true;
     // Compensate for canvas being centered
     paddleBottomX = e.clientX - canvasPosition - paddleDiff;
