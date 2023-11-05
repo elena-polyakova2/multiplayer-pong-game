@@ -214,11 +214,11 @@ function startGame() {
 loadGame();
 //get connection id
 socket.on('connect', () => {
-  console.log('Connected as ', socket.id);
+  console.log(`Connected as ${socket.id}`);
 });
 
 socket.on('startGame', (refereeId) => {
-  console.log('The referee is ', refereeId);
+  console.log(`The referee is ${refereeId}`);
 
   isReferee = socket.id === refereeId;
   startGame();
@@ -233,4 +233,9 @@ socket.on('paddleMove', (paddleData) => {
 //listen to ball movement
 socket.on('ballMove', (ballData) => {
   ({ ballX, ballY, score } = ballData);          
+});
+
+//disconnection listener
+socket.on('disconnect', (reason) => {
+  console.log(`Player with id# ${socket.id} was disconnected due to ${reason}.`);
 })

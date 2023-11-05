@@ -21,8 +21,8 @@ io.on('connection', (socket) => {
     console.log('A player with id# ', socket.id,' is ready to play');
 
     readyPlayerCount++;
-
-    if(readyPlayerCount === 2) {
+    //check if there is even amount of players
+    if(readyPlayerCount % 2 === 0) {
       //broadcast 'start game event' to everyone with the referee id
       io.emit('startGame', socket.id)
 
