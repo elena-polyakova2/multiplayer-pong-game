@@ -23,9 +23,15 @@ io.on('connection', (socket) => {
     readyPlayerCount++;
 
     if(readyPlayerCount === 2) {
-      //broadcast 'start game event' to everyone with the referree id
+      //broadcast 'start game event' to everyone with the referee id
       io.emit('startGame', socket.id)
 
     }
-  })
+  });
+
+  //listener to the paddle position
+  socket.on('paddleMove', (paddleData) => {
+    //broadcast the paddle position to another player
+    socket.broadcast.emit('paddleMove', paddleData);
+  });
 });
