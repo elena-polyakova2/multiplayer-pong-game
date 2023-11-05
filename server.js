@@ -23,7 +23,8 @@ io.on('connection', (socket) => {
     readyPlayerCount++;
 
     if(readyPlayerCount === 2) {
-      //broadcast 'start game event'
+      //broadcast 'start game event' to everyone with the referree id
+      io.emit('startGame', socket.id)
 
     }
   })
