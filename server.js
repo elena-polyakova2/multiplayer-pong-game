@@ -34,4 +34,9 @@ io.on('connection', (socket) => {
     //broadcast the paddle position to another player
     socket.broadcast.emit('paddleMove', paddleData);
   });
+
+  //broadcast the bal position to non referee player
+  socket.on('ballMove', (ballData) => {
+    socket.broadcast.emit('ballMove', ballData);
+  })
 });
