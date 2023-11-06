@@ -1,42 +1,22 @@
-const server = require('http').createServer();
-const io = require('socket.io')(server, {
+const http = require('http');
+const io = require('socket.io');
+
+const apiServer = require('./api');
+
+const httpServer = http.createServer(apiServer);
+const socketServer = io(httpServer, {
   cors: {
     origin: '*',
     methods: ['GET', 'POST']
   }
 });
 
-const PORT = 3000;
+const sockets = require('./sockets');
 
-server.listen(PORT);
+const PORT = 3000;
+//start server and listen for requests
+httpServer.listen(PORT);
 console.log(`Listening on port ${PORT}...`);
 
-let readyPlayerCount = 0;
-
-io.on('connection', (socket) => {
-  console.log('User connected as ', socket.id);
-
-  //notify when a player found
-  socket.on('ready', () => {
-    console.log('A player with id# ', socket.id,' is ready to play');
-
-    readyPlayerCount++;
-    //check if there is even amount of players
-    if(readyPlayerCount % 2 === 0) {
-      //broadcast 'start game event' to everyone with the referee id
-      io.emit('startGame', socket.id)
-
-    }
-  });
-
-  //listener to the paddle position
-  socket.on('paddleMove', (paddleData) => {
-    //broadcast the paddle position to another player
-    socket.broadcast.emit('paddleMove', paddleData);
-  });
-
-  //broadcast the bal position to non referee player
-  socket.on('ballMove', (ballData) => {
-    socket.broadcast.emit('ballMove', ballData);
-  })
-});
+//listen sockets
+sockets.listen(socketServer);
