@@ -1,7 +1,9 @@
 let readyPlayerCount = 0;
 
 function listen(io) {
-  io.on('connection', (socket) => {
+  const pongNamespace = io.of('/pong');
+
+  pongNamespace.on('connection', (socket) => {
     console.log('User connected as ', socket.id);
 
     //notify when a player found
@@ -12,8 +14,7 @@ function listen(io) {
       //check if there is even amount of players
       if(readyPlayerCount % 2 === 0) {
         //broadcast 'start game event' to everyone with the referee id
-        io.emit('startGame', socket.id)
-
+        pongNamespace.emit('startGame', socket.id)
       }
   });
 
