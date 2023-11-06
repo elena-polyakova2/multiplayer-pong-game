@@ -1,7 +1,7 @@
 //Canvas Related 
 const canvas = document.createElement('canvas');
 const context = canvas.getContext('2d');
-const socket = io();
+const socket = io('/pong');
 let isReferee = false;
 let paddleIndex = 0;
 
@@ -234,8 +234,3 @@ socket.on('paddleMove', (paddleData) => {
 socket.on('ballMove', (ballData) => {
   ({ ballX, ballY, score } = ballData);          
 });
-
-//disconnection listener
-socket.on('disconnect', (reason) => {
-  console.log(`Player with id# ${socket.id} was disconnected due to ${reason}.`);
-})
